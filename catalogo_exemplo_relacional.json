@@ -1,0 +1,33 @@
+{
+  "versao": 1,
+  "chave_loja": "CHAVE_LOJA",
+  "chave_unica_por_tabela": true,
+  "exigir_chave_loja": false,
+  "bloquear_sugestoes_pendentes": true,
+  "aliases": {
+    "CHAVE_LOJA": ["CHAVE_LOJA"],
+    "CNPJ": ["CNPJ", "NO_CNPJ"]
+  },
+  "tipos": {"CHAVE_LOJA": "identificador", "CNPJ": "cnpj"},
+  "consistencia_por_chave": ["CNPJ"],
+  "fontes": {
+    "tabela_x.*::*": {
+      "tabela": "LOJAS",
+      "colunas": {"NM_CLIENTE": "CLIENTE"},
+      "colunas_obrigatorias": ["CHAVE_LOJA", "CNPJ", "CLIENTE"],
+      "exigir_chave": true,
+      "chave_unica": true
+    },
+    "tabela_y.*::*": {
+      "tabela": "ACESSOS",
+      "colunas": {"DS_SISTEMA": "SISTEMA"},
+      "colunas_obrigatorias": ["CHAVE_LOJA", "SISTEMA"],
+      "exigir_chave": true,
+      "chave_unica": true
+    }
+  },
+  "enriquecimento": {
+    "tabela_principal": "ACESSOS",
+    "dimensoes": [{"tabela": "LOJAS", "colunas": ["CNPJ", "CLIENTE"], "obrigatoria": true}]
+  }
+}

@@ -1,0 +1,30 @@
+# Arquivos gerados pelo Python e ambientes locais
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Credenciais e configurações locais
+.env
+.env.*
+!.env.example
+configuracao.local.json
+catalogo_colunas.local.json
+
+# Bases e relatórios gerados
+dados/
+relatorios/
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+
+# Apenas os exemplos fictícios acompanham o código
+planilhas/aprovadas/*
+!planilhas/aprovadas/exemplo_matriz.xlsx
+!planilhas/aprovadas/exemplo_filiais.xlsx
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db

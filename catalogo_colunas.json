@@ -1,0 +1,18 @@
+{
+  "versao": 1,
+  "chave_loja": "CHAVE_LOJA",
+  "chave_unica_por_tabela": true,
+  "exigir_chave_loja": false,
+  "bloquear_sugestoes_pendentes": true,
+  "aliases": {
+    "CHAVE_LOJA": ["CHAVE_LOJA"],
+    "CNPJ": ["CNPJ", "NO_CNPJ"]
+  },
+  "tipos": {
+    "CHAVE_LOJA": "identificador",
+    "CNPJ": "cnpj"
+  },
+  "consistencia_por_chave": ["CNPJ"],
+  "fontes": {},
+  "enriquecimento": null
+}
