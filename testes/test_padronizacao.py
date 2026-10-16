@@ -24,6 +24,7 @@ class PadronizacaoTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         (self.root / 'entradas').mkdir()
         config = json.loads((PROJETO / 'configuracao.json').read_text(encoding='utf-8'))
+        config.pop('prospeccao', None)  # Estes testes exercitam o módulo de consultas isoladamente.
         config.update({'pasta_planilhas': 'entradas', 'banco': 'base.sqlite3', 'colunas_data': []})
         self.config = self.root / 'config.json'
         self.config.write_text(json.dumps(config), encoding='utf-8')

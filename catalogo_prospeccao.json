@@ -1,0 +1,53 @@
+{
+  "versao": 1,
+  "fontes": {
+    "credenciados": {
+      "arquivo": "credenciados.csv",
+      "colunas": {}
+    },
+    "responsaveis": {
+      "arquivo": "responsaveis.csv",
+      "colunas": {}
+    },
+    "servicos": {
+      "arquivo": "servicos.csv",
+      "colunas": {}
+    },
+    "contratos": {
+      "arquivo": "contratos.csv",
+      "colunas": {}
+    },
+    "status_contrato": {
+      "arquivo": "status_contrato.csv",
+      "colunas": {}
+    },
+    "contrato_loja": {
+      "arquivo": "contrato_loja.csv",
+      "colunas": {}
+    },
+    "vinculacoes": {
+      "arquivo": "vinculacoes.csv",
+      "colunas": {}
+    },
+    "producao": {
+      "arquivo": "producao.csv",
+      "colunas": {}
+    },
+    "habilitacoes": {
+      "arquivo": "habilitacoes.csv",
+      "colunas": {}
+    },
+    "cobertura": {
+      "arquivo": "cobertura.csv",
+      "colunas": {}
+    },
+    "acompanhamentos": {
+      "arquivo": "acompanhamentos.csv",
+      "colunas": {}
+    },
+    "acao_servico": {
+      "arquivo": "acao_servico.csv",
+      "colunas": {}
+    }
+  }
+}

@@ -1,0 +1,448 @@
+{
+  "ativo": true,
+  "gerado_em": "2026-10-16T12:51:47.196640+00:00",
+  "estado": "APTO",
+  "chave_loja": "CHAVE_LOJA",
+  "tabelas": [
+    {
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "fontes": [
+        "exemplo_filiais.xlsx::Acessos"
+      ],
+      "linhas": 28,
+      "chave_presente": false,
+      "chave": "CHAVE_LOJA",
+      "chaves_distintas": 0,
+      "chaves_vazias": 0,
+      "chaves_repetidas": 0,
+      "unicidade_exigida": true,
+      "colunas": [
+        "ATUALIZADO_EM",
+        "CHAMADO",
+        "CLIENTE",
+        "CODIGO_DO_CLIENTE",
+        "ID",
+        "OBSERVACAO",
+        "PERFIL",
+        "RESPONSAVEL",
+        "SISTEMA",
+        "STATUS",
+        "UNIDADE",
+        "USUARIO"
+      ]
+    },
+    {
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "fontes": [
+        "exemplo_matriz.xlsx::Acessos"
+      ],
+      "linhas": 56,
+      "chave_presente": false,
+      "chave": "CHAVE_LOJA",
+      "chaves_distintas": 0,
+      "chaves_vazias": 0,
+      "chaves_repetidas": 0,
+      "unicidade_exigida": true,
+      "colunas": [
+        "ATUALIZADO_EM",
+        "CLIENTE",
+        "CODIGO_DO_CLIENTE",
+        "ID",
+        "OBSERVACAO",
+        "PERFIL",
+        "RESPONSAVEL",
+        "SISTEMA",
+        "STATUS",
+        "UNIDADE",
+        "USUARIO"
+      ]
+    }
+  ],
+  "mapeamentos": [
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "ID",
+      "padrao": "ID",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Cliente",
+      "padrao": "CLIENTE",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Usuário",
+      "padrao": "USUARIO",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Sistema",
+      "padrao": "SISTEMA",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Perfil",
+      "padrao": "PERFIL",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Status",
+      "padrao": "STATUS",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Atualizado em",
+      "padrao": "ATUALIZADO_EM",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "data": 28
+      },
+      "formatos": {
+        "data": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Código do cliente",
+      "padrao": "CODIGO_DO_CLIENTE",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "digitos": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Unidade",
+      "padrao": "UNIDADE",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Responsável",
+      "padrao": "RESPONSAVEL",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Observação",
+      "padrao": "OBSERVACAO",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 4,
+      "vazios": 24,
+      "tipos": {
+        "texto": 4
+      },
+      "formatos": {
+        "outro": 4
+      }
+    },
+    {
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "tabela": "exemplo_filiais.xlsx::Acessos",
+      "original": "Chamado",
+      "padrao": "CHAMADO",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 28,
+      "vazios": 0,
+      "tipos": {
+        "texto": 28
+      },
+      "formatos": {
+        "outro": 28
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "ID",
+      "padrao": "ID",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Cliente",
+      "padrao": "CLIENTE",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Usuário",
+      "padrao": "USUARIO",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Sistema",
+      "padrao": "SISTEMA",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Perfil",
+      "padrao": "PERFIL",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Status",
+      "padrao": "STATUS",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Atualizado em",
+      "padrao": "ATUALIZADO_EM",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "data": 56
+      },
+      "formatos": {
+        "data": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Código do cliente",
+      "padrao": "CODIGO_DO_CLIENTE",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "digitos": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Unidade",
+      "padrao": "UNIDADE",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Responsável",
+      "padrao": "RESPONSAVEL",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 56,
+      "vazios": 0,
+      "tipos": {
+        "texto": 56
+      },
+      "formatos": {
+        "outro": 56
+      }
+    },
+    {
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "tabela": "exemplo_matriz.xlsx::Acessos",
+      "original": "Observação",
+      "padrao": "OBSERVACAO",
+      "regra": "nome",
+      "tipo_configurado": null,
+      "preenchidos": 8,
+      "vazios": 48,
+      "tipos": {
+        "texto": 8
+      },
+      "formatos": {
+        "outro": 8
+      }
+    }
+  ],
+  "sugestoes": [],
+  "erros": [],
+  "total_erros": 0,
+  "avisos": [
+    {
+      "codigo": "FONTE_SEM_CHAVE",
+      "fonte": "exemplo_filiais.xlsx::Acessos",
+      "mensagem": "exemplo_filiais.xlsx::Acessos: não contém CHAVE_LOJA; relacionamento por loja indisponível."
+    },
+    {
+      "codigo": "FONTE_SEM_CHAVE",
+      "fonte": "exemplo_matriz.xlsx::Acessos",
+      "mensagem": "exemplo_matriz.xlsx::Acessos: não contém CHAVE_LOJA; relacionamento por loja indisponível."
+    }
+  ],
+  "relacionamentos": [],
+  "catalogo_hash": "656127e1635fea5148fc916d93ecbba6843cd630b3e9b42e1d436646ba8694c7"
+}

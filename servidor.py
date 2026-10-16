@@ -13,12 +13,18 @@ from urllib.parse import parse_qs
 
 from consulta import ErroConsulta, abrir_base, consultar, exportar_csv, ler_metadados, montar_consulta, opcoes
 from integracao import PADRAO_CONFIG, carregar_configuracao
+from prospeccao import consultar_prospeccao, consultar_consultores, csv_prospeccao, detalhe_loja, ler_base as ler_prospeccao, metadados as meta_prospeccao
 
 RAIZ = Path(__file__).resolve().parent
 ARQUIVOS = {
     '/': (RAIZ / 'index.html', 'text/html; charset=utf-8'),
     '/static/style.css': (RAIZ / 'static/style.css', 'text/css; charset=utf-8'),
     '/static/app.js': (RAIZ / 'static/app.js', 'text/javascript; charset=utf-8'),
+    '/static/prospeccao.js': (RAIZ / 'static/prospeccao.js', 'text/javascript; charset=utf-8'),
+    '/static/prospeccao-consultores.js': (RAIZ / 'static/prospeccao-consultores.js', 'text/javascript; charset=utf-8'),
+    '/static/prospeccao.css': (RAIZ / 'static/prospeccao.css', 'text/css; charset=utf-8'),
+    '/static/filter-selects.js': (RAIZ / 'static/filter-selects.js', 'text/javascript; charset=utf-8'),
+    '/static/filter-selects.css': (RAIZ / 'static/filter-selects.css', 'text/css; charset=utf-8'),
     '/static/favicon.svg': (RAIZ / 'static/favicon.svg', 'image/svg+xml'),
 }
 CABECALHOS = [
@@ -66,7 +72,8 @@ class Dashboard:
             if caminho in ARQUIVOS:
                 arquivo, mime = ARQUIVOS[caminho]
                 return self.responder(start_response, '200 OK', arquivo.read_bytes(), mime)
-            if caminho not in {'/api/metadados', '/api/registros', '/api/opcoes', '/api/exportar.csv'}:
+            rotas_prospeccao = {'/api/prospeccao/metadados', '/api/prospeccao/painel', '/api/prospeccao/loja', '/api/prospeccao/exportar.csv', '/api/prospeccao/consultores', '/api/prospeccao/consultores.csv'}
+            if caminho not in {'/api/metadados', '/api/registros', '/api/opcoes', '/api/exportar.csv'} | rotas_prospeccao:
                 return self.responder(start_response, '404 Not Found', {'erro': 'Página não encontrada.'})
             raw = environ.get('QUERY_STRING', '')
             if len(raw) > 16384:
@@ -75,6 +82,23 @@ class Dashboard:
             if any(len(values) != 1 for values in parsed.values()):
                 raise ErroConsulta('Não repita parâmetros da consulta.')
             params = {k: v[0] for k, v in parsed.items()}
+            if caminho in rotas_prospeccao:
+                with abrir_base(self.config) as conn:
+                    if caminho.endswith('/metadados'):
+                        payload = meta_prospeccao(ler_prospeccao(conn, self.config))
+                    elif caminho.endswith('/loja'):
+                        payload = detalhe_loja(conn, self.config, params)
+                    elif caminho.endswith('/consultores'):
+                        payload = consultar_consultores(conn, self.config, params)
+                    elif caminho.endswith('/consultores.csv'):
+                        return self.responder(start_response, '200 OK', consultar_consultores(conn, self.config, params, exportar=True),
+                            'text/csv; charset=utf-8', extras=[('Content-Disposition', 'attachment; filename="atividades_consultores.csv"')])
+                    elif caminho.endswith('/exportar.csv'):
+                        return self.responder(start_response, '200 OK', csv_prospeccao(conn, self.config, params),
+                            'text/csv; charset=utf-8', extras=[('Content-Disposition', 'attachment; filename="prospeccao_filtrada.csv"')])
+                    else:
+                        payload = consultar_prospeccao(conn, self.config, params)
+                    return self.responder(start_response, '200 OK', payload)
             # A exportação mantém seu próprio snapshot aberto até o fim do streaming.
             if caminho == '/api/exportar.csv':
                 return self.exportar(params, start_response)

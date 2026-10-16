@@ -82,7 +82,7 @@ def carregar_configuracao(caminho=PADRAO_CONFIG) -> Configuracao:
     def resolver(nome, padrao):
         caminho = Path(valores.get(nome, padrao))
         return caminho.resolve() if caminho.is_absolute() else (arquivo.parent / caminho).resolve()
-    return Configuracao(arquivo, valores, resolver('pasta_planilhas', 'planilhas/aprovadas'), resolver('banco', 'dados/dashboard.sqlite3'))
+    return Configuracao(arquivo, valores, resolver('pasta_planilhas', 'planilhas_aprovadas'), resolver('banco', 'dados/dashboard.sqlite3'))
 
 
 def arquivos_da_pasta(config: Configuracao) -> list[Path]:
@@ -337,6 +337,8 @@ def atualizar_dashboard(config_path=PADRAO_CONFIG, planilhas: Iterable[str | Pat
         if somente_analisar:
             return {'total': quantidade, 'fontes': fontes, 'analise_padronizacao': analise}
         agente.exigir_valido()
+        from prospeccao import publicar_prospeccao
+        resumo_prospeccao = publicar_prospeccao(conn, config)
         for coluna in colunas:
             conjunto = tipos[coluna['id']]
             coluna['tipo'] = next(iter(conjunto)) if len(conjunto) == 1 else 'texto'
@@ -358,6 +360,8 @@ def atualizar_dashboard(config_path=PADRAO_CONFIG, planilhas: Iterable[str | Pat
         resumo = {'colunas': colunas, 'papeis': papeis, 'fontes': fontes, 'total': quantidade,
                   'atualizado_em': datetime.now(timezone.utc).isoformat(), 'versao': uuid.uuid4().hex,
                   'analise_padronizacao': analise}
+        if resumo_prospeccao is not None:
+            resumo['prospeccao'] = resumo_prospeccao
         conn.execute('INSERT OR REPLACE INTO metadados VALUES (?, ?)', ('snapshot', json.dumps(resumo, ensure_ascii=False)))
         conn.execute('DROP TABLE carga_temporaria')
         conn.commit()

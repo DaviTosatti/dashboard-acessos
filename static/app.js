@@ -112,7 +112,21 @@ function applyMeta(meta) {
   $("filter-rows").replaceChildren();
   state.filters.forEach(addFilterRow);
   updateFilterCount();
+  const dates = meta.colunas.filter(c => c.tipo === "data");
+  const previousDate = $("date-column").value;
+  $("date-column").replaceChildren(...dates.map(c => option(c.id,c.nome)));
+  if (dates.some(c => c.id === previousDate)) $("date-column").value = previousDate;
+  $("consulta-date-range").hidden = !dates.length;
+  if (!dates.length) { $("date-from").value = ""; $("date-to").value = ""; }
+  for (const [role, id] of [["sistema","system"],["status","status"]]) {
+    if (meta.papeis[role]) window.FilterMenus?.setProvider($(id), async (query,signal) => {
+      const payload = await jsonRequest(`/api/opcoes?${new URLSearchParams({coluna: state.meta.papeis[role], busca: query})}`,signal);
+      return {options: payload.valores, more: payload.mais_resultados};
+    });
+  }
+  window.FilterMenus?.refresh();
   renderSources();
+  if (state.view === "prospeccao") window.Prospec?.syncHeader();
 }
 
 async function loadOptions() {
@@ -145,6 +159,14 @@ async function clientSuggestions() {
 function currentParams() {
   const params = new URLSearchParams({pagina: String(state.page), por_pagina: $("page-size").value});
   const filters = [...state.filters];
+  const from = $("date-from").value, to = $("date-to").value;
+  if (from && to && from > to) throw new Error("A data inicial deve ser anterior ou igual à data final.");
+  if (from || to) {
+    const column = $("date-column").value;
+    if (!column) throw new Error("Escolha um campo de data para aplicar o período.");
+    if (from) filters.push({coluna: column, operador: "maior_igual", valor: from});
+    if (to) filters.push({coluna: column, operador: "menor_igual", valor: to});
+  }
   const search = $("search").value.trim();
   if (search) {
     if ($("search-column").value) filters.push({coluna: $("search-column").value, operador: "contem", valor: search});
@@ -204,6 +226,7 @@ async function loadData(retryVersion = true) {
 }
 
 async function refresh() {
+  if (state.view === "prospeccao" && window.Prospec) { await window.Prospec.refresh(); return; }
   $("refresh").disabled = true;
   try {
     const meta = await jsonRequest("/api/metadados");
@@ -444,16 +467,23 @@ function renderSchemaAudit() {
 
 function switchView(view) {
   state.view = view;
-  $("consulta-view").hidden = view !== "consulta";
-  $("fontes-view").hidden = view !== "fontes";
-  $("breadcrumb-view").textContent = view === "consulta" ? "Acessos" : "Fontes";
-  $("page-title").textContent = view === "consulta" ? (state.meta?.titulo || "Consulta de acessos") : "Fontes de dados";
-  $("page-description").textContent = view === "consulta" ? "Pesquise clientes, sistemas e permissões em um só lugar." : "Consulte a origem dos registros publicados no painel.";
-  for (const name of ["consulta", "fontes"]) {
+  for (const name of ["consulta", "fontes", "prospeccao"]) {
+    $(name + "-view").hidden = name !== view;
     $("nav-" + name).classList.toggle("active", name === view);
     if (name === view) $("nav-" + name).setAttribute("aria-current", "page");
     else $("nav-" + name).removeAttribute("aria-current");
   }
+  $("breadcrumb-view").textContent = {consulta: "Acessos", fontes: "Fontes", prospeccao: "Prospecção"}[view];
+  $("page-title").textContent = view === "consulta" ? (state.meta?.titulo || "Consulta de acessos") : view === "fontes" ? "Fontes de dados" : "Prospecção e continuidade";
+  $("page-description").textContent = {consulta: "Pesquise clientes, sistemas e permissões em um só lugar.", fontes: "Consulte a origem dos registros publicados no painel.", prospeccao: "Acompanhe a conversão dos contratos e a qualidade da carteira."}[view];
+  $("refresh").lastChild.textContent = view === "prospeccao" ? "Atualizar painel" : "Atualizar consulta";
+  if (view !== "prospeccao" && state.meta) {
+    $("updated").textContent = timestamp(state.meta.atualizado_em);
+    $("sidebar-updated").textContent = timestamp(state.meta.atualizado_em);
+    $("example-badge").hidden = !state.meta.modo_exemplo;
+    $("sync-state").textContent = state.meta.carregado ? "Base disponível" : "Base não importada";
+  }
+  document.dispatchEvent(new CustomEvent("dashboard:view", {detail: view}));
 }
 
 async function exportResults() {
@@ -485,10 +515,12 @@ $("client").addEventListener("input", () => { clearTimeout(clientTimer); clientT
 for (const id of ["system", "status", "source"]) $(id).addEventListener("change", newSearch);
 $("clear").addEventListener("click", () => {
   clearTimeout(searchTimer); clearTimeout(clientTimer);
-  for (const id of ["search", "search-column", "client", "system", "status", "source"]) $(id).value = "";
+  for (const id of ["search", "search-column", "client", "system", "status", "source", "date-from", "date-to"]) $(id).value = "";
+  window.FilterMenus?.refresh();
   state.filters = []; state.sort = ""; state.direction = "asc";
   $("filter-rows").replaceChildren(); updateFilterCount(); newSearch();
 });
+for (const id of ["date-column","date-from","date-to"]) $(id).addEventListener("change", newSearch);
 $("add-filter").addEventListener("click", () => addFilterRow());
 $("apply-filters").addEventListener("click", applyFilters);
 $("refresh").addEventListener("click", refresh);
@@ -509,7 +541,7 @@ document.addEventListener("keydown", event => {
 });
 document.addEventListener("click", event => { if (!$("columns-menu").contains(event.target)) $("columns-menu").open = false; });
 setInterval(async () => {
-  if (document.hidden || !state.meta || state.loading) return;
+  if (document.hidden || state.view === "prospeccao" || !state.meta || state.loading) return;
   try {
     const meta = await jsonRequest("/api/metadados");
     if (meta.versao !== state.meta.versao) { applyMeta(meta); await Promise.all([loadOptions(), loadData()]); toast("Uma atualização da base foi publicada."); }

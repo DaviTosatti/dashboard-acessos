@@ -1,8 +1,13 @@
 {
   "titulo": "Consulta de acessos",
-  "pasta_planilhas": "planilhas/aprovadas",
+  "pasta_planilhas": "planilhas_aprovadas",
   "banco": "dados/dashboard.sqlite3",
-  "padroes": ["*.xlsx", "*.xlsm", "*.csv", "*.tsv"],
+  "padroes": [
+    "*.xlsx",
+    "*.xlsm",
+    "*.csv",
+    "*.tsv"
+  ],
   "abas": null,
   "linha_cabecalho": 1,
   "codificacao_csv": "utf-8-sig",
@@ -10,13 +15,33 @@
   "renomear_colunas": {},
   "catalogo_colunas": "catalogo_colunas.json",
   "colunas_ocultas": [],
-  "colunas_data": ["Atualizado em"],
+  "colunas_data": [
+    "Atualizado em"
+  ],
   "colunas_numero": [],
   "coluna_cliente": "Cliente",
   "coluna_sistema": "Sistema",
   "coluna_status": "Status",
-  "colunas_iniciais": ["ID", "Cliente", "Usuário", "Sistema", "Perfil", "Status", "Atualizado em"],
+  "colunas_iniciais": [
+    "ID",
+    "Cliente",
+    "Usuário",
+    "Sistema",
+    "Perfil",
+    "Status",
+    "Atualizado em"
+  ],
   "limite_registros": 200000,
   "limite_colunas": 128,
-  "modo_exemplo": true
+  "modo_exemplo": true,
+  "prospeccao": {
+    "ativo": true,
+    "pasta": "planilhas_prospeccao",
+    "catalogo": "catalogo_prospeccao.json",
+    "data_corte": "2026-10-15",
+    "ultimo_mes_fechado": "2026-09",
+    "dias_observacao": 30,
+    "quantidade_producao": "liquida",
+    "modo_exemplo": true
+  }
 }

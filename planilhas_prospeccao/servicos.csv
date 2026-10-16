@@ -1,0 +1,5 @@
+﻿ID_SERVICO;NOME;CATEGORIA;TIPO_ATIVIDADE;VIGENCIA_INICIO;VIGENCIA_FIM
+TR;Transações bancárias;Atendimento;TRANSACAO;;
+CR;Crédito demonstrativo;Crédito;NEGOCIO;;
+CO;Consórcio demonstrativo;Consórcio;NEGOCIO;;
+OU;Outro negócio demonstrativo;Outros;NEGOCIO;;

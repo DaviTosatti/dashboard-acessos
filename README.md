@@ -1,12 +1,26 @@
-# Dashboard de acessos
+# Expresso — Gestão, prospecção e consultas
 
 Projeto em Python com uma interface HTML, CSS e JavaScript para consultar as planilhas que sua rotina publica. Funciona em um servidor Windows ou Linux; os colegas acessam pelo navegador, sem instalar Python em cada computador.
 
 A busca funciona em qualquer coluna, ignora acentos e maiúsculas e aceita filtros combinados. O painel oferece atalhos para cliente, sistema, status e arquivo, condições por coluna, ordenação, paginação, seleção de colunas, detalhes da origem e exportação CSV de **todos os resultados filtrados**, não apenas da página atual.
 
+## Novidades de períodos e consultores
+
+O painel agora oferece intervalos de/até, atalhos de 3/6/12 meses, uma aba de produção e atividades dos consultores e pesquisa dentro dos menus de filtros. Também lembra os filtros durante a sessão, mostra recortes aplicados e avisa sobre alterações pendentes. Leia [ATUALIZACOES.md](ATUALIZACOES.md) para conferir como cada indicador usa o intervalo ou o último fechamento.
+
+## Prospecção integrada
+
+A nova tela **Prospecção** acompanha contratos, safras, continuidade, risco, serviços, treinamento, suportes e qualidade dos dados, com filtros por gerência e consultor. O layout foi mantido e recebeu uma paleta de vermelho e vinho. As consultas de acessos e o agente original continuam disponíveis na lateral.
+
+Leia [GUIA_PROSPECCAO.md](GUIA_PROSPECCAO.md) para configurar suas bases e [DICIONARIO_INDICADORES.md](DICIONARIO_INDICADORES.md) para conferir fórmulas, denominadores e regras. Há modelos vazios em `modelos_prospeccao` e dados fictícios em `planilhas_prospeccao`. Nunca misture os arquivos de fatos da prospecção com o cadastro de consultas que exige CHAVE_LOJA única por tabela.
+
+No Windows, após extrair o ZIP inteiro, execute `INSTALAR_DEPENDENCIAS.bat` uma vez e `INICIAR_DASHBOARD.bat` para importar e iniciar o painel. O inicializador usa `configuracao.local.json` quando esse arquivo existe.
+
 ## Testar com os exemplos
 
-Requer Python 3.10 ou superior. Extraia o ZIP e abra o terminal na pasta `dashboard_acessos`. Se recebeu o projeto pelo GitHub, abra a pasta clonada do repositório.
+Requer Python 3.10 ou superior. Extraia o ZIP inteiro e abra o terminal na pasta `dashboard_acessos`. Se recebeu o projeto pelo GitHub, abra a pasta clonada do repositório.
+
+A pasta das planilhas agora se chama **`planilhas_aprovadas`**. Ela é uma única pasta, já incluída no ZIP, e fica ao lado de `integracao.py` e `configuracao.json`. Coloque os arquivos Excel, CSV ou TSV diretamente nela.
 
 ```bash
 python -m pip install -r requirements.txt
@@ -14,7 +28,7 @@ python integracao.py
 python servidor.py
 ```
 
-Abra **http://127.0.0.1:8000**. As duas planilhas incluídas contêm 84 registros fictícios. O painel identifica esses dados como exemplos. Não precisa de conexão com a internet para carregar a interface; seus recursos são locais.
+Abra **http://127.0.0.1:8000**. As duas planilhas de acessos incluídas contêm 84 registros fictícios. A prospecção inclui 48 lojas, 168 contratos e históricos fictícios, com fechamento de setembro de 2026. O painel identifica esses dados como exemplos. Não precisa de conexão com a internet para carregar a interface; seus recursos são locais.
 
 Para isolar as dependências, crie um ambiente com `python -m venv .venv`. No Windows, substitua `python` nos comandos acima por `.\.venv\Scripts\python.exe`. No Linux, substitua por `./.venv/bin/python`.
 
@@ -22,16 +36,23 @@ Se estiver apenas testando e ainda não tiver o Waitress, `python servidor.py --
 
 ## Usar as suas planilhas
 
-1. Retire `exemplo_matriz.xlsx` e `exemplo_filiais.xlsx` da pasta `planilhas/aprovadas`.
+1. Retire `exemplo_matriz.xlsx` e `exemplo_filiais.xlsx` da pasta `planilhas_aprovadas`.
 2. Coloque nessa pasta o conjunto completo de planilhas que deve ficar disponível para consulta. Subpastas também são lidas.
 3. Ajuste `configuracao.json` e defina `modo_exemplo` como `false`.
-4. Depois da sua etapa de aprovação, execute `python integracao.py`. Com o servidor aberto, os dados novos ficam disponíveis sem reiniciá-lo.
+4. Configure também as fontes reais de prospecção, conforme o guia, ou defina `prospeccao.ativo` como `false` para importar somente acessos.
+5. Depois da sua etapa de aprovação, execute `python integracao.py`. Com o servidor aberto, os dados novos ficam disponíveis sem reiniciá-lo.
 
 O painel verifica novas publicações a cada minuto. O botão **Atualizar consulta** recarrega imediatamente a base publicada.
 
 As fontes aceitas são `.xlsx`, `.xlsm`, `.csv` e `.tsv`. Converta arquivos antigos `.xls` para `.xlsx`. As planilhas de origem são lidas, sem alteração ou execução de macros.
 
-O `.gitignore` inclui apenas as duas planilhas fictícias no controle de versão e exclui novas entradas em `planilhas/aprovadas`, bancos gerados, relatórios, ambientes Python e arquivos `.env`. Para usar caminhos da empresa, faça uma cópia de `configuracao.json` chamada `configuracao.local.json` e informe `--config configuracao.local.json` nos comandos. Se o catálogo contiver nomes internos, use `catalogo_colunas.local.json` e indique esse caminho na configuração local. Esses dois arquivos locais também ficam fora do Git.
+O `.gitignore` inclui apenas as duas planilhas fictícias no controle de versão e exclui novas entradas em `planilhas_aprovadas`, bancos gerados, relatórios, ambientes Python e arquivos `.env`. Para usar caminhos da empresa, faça uma cópia de `configuracao.json` chamada `configuracao.local.json` e informe `--config configuracao.local.json` nos comandos. Se o catálogo contiver nomes internos, use `catalogo_colunas.local.json` e indique esse caminho na configuração local. Esses dois arquivos locais também ficam fora do Git.
+
+Se você mantiver um arquivo de configuração de uma versão anterior, ajuste também nele a pasta de entrada:
+
+```json
+"pasta_planilhas": "planilhas_aprovadas"
+```
 
 ## Agente de padronização das colunas
 
@@ -191,7 +212,7 @@ Os caminhos relativos são resolvidos a partir de `configuracao.json`, independe
 | Campo | O que configurar |
 | --- | --- |
 | `titulo` | Título exibido no painel. |
-| `pasta_planilhas` | Pasta com o conjunto completo de arquivos publicados. |
+| `pasta_planilhas` | Pasta com o conjunto completo de arquivos publicados. O padrão é `planilhas_aprovadas`, dentro da pasta do projeto. |
 | `banco` | Base SQLite criada pela importação. Mantenha-a em disco local no servidor. |
 | `padroes` | Padrões dos nomes de arquivo que serão importados. |
 | `abas` | `null` para todas as abas; ou, por exemplo, `["Acessos"]`. Com uma lista, todas as abas indicadas devem existir em cada Excel. |
@@ -225,6 +246,14 @@ python servidor.py --host 0.0.0.0 --porta 8000
 Os colegas acessam `http://IP-DO-SERVIDOR:8000`, conforme a liberação da rede interna. O endereço `0.0.0.0` é usado pelo servidor para escutar a rede, não é o endereço a enviar aos colegas. Somente o servidor precisa ter Python e acesso aos arquivos publicados.
 
 O painel permite consulta e exportação. A publicação dos dados é feita pelo script de importação, que precisa de permissão de escrita no diretório do banco. A base usa SQLite com WAL e deve permanecer em **disco local**, mesmo quando as planilhas forem lidas de uma pasta compartilhada.
+
+### Caminhos de rede no Windows
+
+Unidades mapeadas podem ser resolvidas pelo Windows para um caminho UNC, como `\\servidor\compartilhamento\pasta`. A abertura da base trata esse formato e mantém o acesso somente para leitura. Espaços, acentos e símbolos no nome do arquivo são preservados.
+
+Para atualizar uma instalação anterior que mostra `invalid uri authority`, pare o servidor com `Ctrl+C`, substitua `consulta.py` pela versão deste pacote e execute novamente `python servidor.py`. Se você usa `--config`, mantenha o mesmo argumento. Essa correção não exige substituir as planilhas, alterar a configuração ou recriar a base.
+
+Configure `banco` para uma pasta local com permissão de escrita na máquina que executa a importação e o servidor. A correção do endereço UNC não altera o modo WAL: esse modo exige armazenamento local. As planilhas de entrada podem continuar na rede. Veja as referências oficiais sobre [URIs do SQLite](https://www.sqlite.org/uri.html) e [WAL](https://www.sqlite.org/wal.html).
 
 Para uma implantação corporativa, coloque o serviço atrás do proxy interno com HTTPS e do controle de acesso da empresa. Como alternativa simples, o servidor aceita autenticação compartilhada por `DASHBOARD_USUARIO` e `DASHBOARD_SENHA`. No PowerShell:
 
@@ -260,7 +289,7 @@ O CSV exporta os dados e a origem de cada linha, em UTF-8 com BOM e separador `;
 - `servidor.py`: aplicação WSGI, autenticação opcional e servidor Waitress.
 - `configuracao.json`: fontes e nomes dos campos.
 - `index.html` e `static/`: interface, sem dependência de CDN.
-- `planilhas/aprovadas/`: exemplos substituíveis pelas suas fontes reais.
+- `planilhas_aprovadas/`: exemplos substituíveis pelas suas fontes reais.
 - `testes/`: testes automatizados com a biblioteca padrão do Python.
 
 Para executar os testes:

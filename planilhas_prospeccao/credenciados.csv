@@ -1,0 +1,49 @@
+﻿CHAVE_LOJA;CNPJ;RAZAO_SOCIAL;MUNICIPIO;UF;BAIRRO;RAMO_ATIVIDADE;DATA_INAUGURACAO;DATA_ENCERRAMENTO;MOTIVO_ENCERRAMENTO;TREINAMENTO_STATUS
+001000;;Comércio fictício 01;Curitiba;PR;Bairro exemplo 1;Mercado;2024-09-10;;;NAO_INFORMADO
+001001;;Comércio fictício 02;Curitiba;PR;Bairro exemplo 2;Farmácia;2025-09-10;;;NAO_REALIZADO
+001002;;Comércio fictício 03;Curitiba;PR;Bairro exemplo 3;Papelaria;2026-02-10;;;NAO_INFORMADO
+001003;;Comércio fictício 04;Curitiba;PR;Bairro exemplo 1;Mercado;2026-04-10;;;NAO_INFORMADO
+001004;;Comércio fictício 05;Curitiba;PR;Bairro exemplo 2;Farmácia;2026-05-10;;;NAO_REALIZADO
+001005;;Comércio fictício 06;Curitiba;PR;Bairro exemplo 3;Papelaria;2026-06-10;;;NAO_INFORMADO
+001006;;Comércio fictício 07;Curitiba;PR;Bairro exemplo 1;Mercado;2026-08-10;;;NAO_INFORMADO
+001007;;Comércio fictício 08;Curitiba;PR;Bairro exemplo 2;Farmácia;2026-09-10;;;NAO_REALIZADO
+001008;;Comércio fictício 09;Belo Horizonte;MG;Bairro exemplo 3;Papelaria;2024-09-10;;;NAO_INFORMADO
+001009;;Comércio fictício 10;Belo Horizonte;MG;Bairro exemplo 1;Mercado;2025-09-10;;;NAO_INFORMADO
+001010;;Comércio fictício 11;Belo Horizonte;MG;Bairro exemplo 2;Farmácia;2026-02-10;2026-08-20;Encerramento fictício;NAO_REALIZADO
+001011;;Comércio fictício 12;Belo Horizonte;MG;Bairro exemplo 3;Papelaria;2026-04-10;;;NAO_INFORMADO
+001012;;Comércio fictício 13;Belo Horizonte;MG;Bairro exemplo 1;Mercado;2026-05-10;;;NAO_INFORMADO
+001013;;Comércio fictício 14;Belo Horizonte;MG;Bairro exemplo 2;Farmácia;2026-06-10;;;NAO_REALIZADO
+001014;;Comércio fictício 15;Belo Horizonte;MG;Bairro exemplo 3;Papelaria;2026-08-10;;;NAO_INFORMADO
+001015;;Comércio fictício 16;Belo Horizonte;MG;Bairro exemplo 1;Mercado;2026-09-10;;;NAO_INFORMADO
+001016;;Comércio fictício 17;Recife;PE;Bairro exemplo 2;Farmácia;2024-09-10;;;NAO_REALIZADO
+001017;;Comércio fictício 18;Recife;PE;Bairro exemplo 3;Papelaria;2025-09-10;;;NAO_INFORMADO
+001018;;Comércio fictício 19;Recife;PE;Bairro exemplo 1;Mercado;2026-02-10;;;NAO_INFORMADO
+001019;;Comércio fictício 20;Recife;PE;Bairro exemplo 2;Farmácia;2026-04-10;;;NAO_REALIZADO
+001020;;Comércio fictício 21;Recife;PE;Bairro exemplo 3;Papelaria;2026-05-10;;;NAO_INFORMADO
+001021;;Comércio fictício 22;Recife;PE;Bairro exemplo 1;Mercado;2026-06-10;2026-08-20;Encerramento fictício;NAO_INFORMADO
+001022;;Comércio fictício 23;Recife;PE;Bairro exemplo 2;Farmácia;2026-08-10;;;NAO_REALIZADO
+001023;;Comércio fictício 24;Recife;PE;Bairro exemplo 3;Papelaria;2026-09-10;;;NAO_INFORMADO
+001024;;Comércio fictício 25;Salvador;BA;Bairro exemplo 1;Mercado;2024-09-10;;;NAO_INFORMADO
+001025;;Comércio fictício 26;Salvador;BA;Bairro exemplo 2;Farmácia;2025-09-10;;;NAO_REALIZADO
+001026;;Comércio fictício 27;Salvador;BA;Bairro exemplo 3;Papelaria;2026-02-10;;;NAO_INFORMADO
+001027;;Comércio fictício 28;Salvador;BA;Bairro exemplo 1;Mercado;2026-04-10;;;NAO_INFORMADO
+001028;;Comércio fictício 29;Salvador;BA;Bairro exemplo 2;Farmácia;2026-05-10;;;NAO_REALIZADO
+001029;;Comércio fictício 30;Salvador;BA;Bairro exemplo 3;Papelaria;2026-06-10;;;NAO_INFORMADO
+001030;;Comércio fictício 31;Salvador;BA;Bairro exemplo 1;Mercado;2026-08-10;;;NAO_INFORMADO
+001031;;Comércio fictício 32;Salvador;BA;Bairro exemplo 2;Farmácia;2026-09-10;;;NAO_REALIZADO
+001032;;Comércio fictício 33;Goiânia;GO;Bairro exemplo 3;Papelaria;2024-09-10;2026-08-20;Encerramento fictício;NAO_INFORMADO
+001033;;Comércio fictício 34;Goiânia;GO;Bairro exemplo 1;Mercado;2025-09-10;;;NAO_INFORMADO
+001034;;Comércio fictício 35;Goiânia;GO;Bairro exemplo 2;Farmácia;2026-02-10;;;NAO_REALIZADO
+001035;;Comércio fictício 36;Goiânia;GO;Bairro exemplo 3;Papelaria;2026-04-10;;;NAO_INFORMADO
+001036;;Comércio fictício 37;Goiânia;GO;Bairro exemplo 1;Mercado;2026-05-10;;;NAO_INFORMADO
+001037;;Comércio fictício 38;Goiânia;GO;Bairro exemplo 2;Farmácia;2026-06-10;;;NAO_REALIZADO
+001038;;Comércio fictício 39;Goiânia;GO;Bairro exemplo 3;Papelaria;2026-08-10;;;NAO_INFORMADO
+001039;;Comércio fictício 40;Goiânia;GO;Bairro exemplo 1;Mercado;2026-09-10;;;NAO_INFORMADO
+001040;;Comércio fictício 41;Campinas;SP;Bairro exemplo 2;Farmácia;2024-09-10;;;NAO_REALIZADO
+001041;;Comércio fictício 42;Campinas;SP;Bairro exemplo 3;Papelaria;2025-09-10;;;NAO_INFORMADO
+001042;;Comércio fictício 43;Campinas;SP;Bairro exemplo 1;Mercado;2026-02-10;;;NAO_INFORMADO
+001043;;Comércio fictício 44;Campinas;SP;Bairro exemplo 2;Farmácia;2026-04-10;2026-08-20;Encerramento fictício;NAO_REALIZADO
+001044;;Comércio fictício 45;Campinas;SP;Bairro exemplo 3;Papelaria;2026-05-10;;;NAO_INFORMADO
+001045;;Comércio fictício 46;Campinas;SP;Bairro exemplo 1;Mercado;2026-06-10;;;NAO_INFORMADO
+001046;;Comércio fictício 47;Campinas;SP;Bairro exemplo 2;Farmácia;2026-08-10;;;NAO_REALIZADO
+001047;;Comércio fictício 48;Campinas;SP;Bairro exemplo 3;Papelaria;2026-09-10;;;NAO_INFORMADO

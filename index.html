@@ -4,10 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Consulta de clientes, sistemas e acessos da base consolidada.">
-  <title>Consulta de acessos</title>
+  <title>Expresso | Gestão e consultas</title>
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/prospeccao.css">
+  <link rel="stylesheet" href="/static/filter-selects.css">
+  <script src="/static/filter-selects.js" defer></script>
   <script src="/static/app.js" defer></script>
+  <script src="/static/prospeccao.js" defer></script>
+  <script src="/static/prospeccao-consultores.js" defer></script>
 </head>
 <body>
   <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -27,10 +32,11 @@
 
   <a class="skip-link" href="#principal">Ir para a consulta</a>
   <aside class="sidebar">
-    <a class="brand" href="/" aria-label="Página inicial"><span class="brand-mark"><svg><use href="#i-grid"/></svg></span><span>Acessos<span class="brand-sub">Central de consulta</span></span></a>
+    <a class="brand" href="/" aria-label="Página inicial"><span class="brand-mark"><svg><use href="#i-grid"/></svg></span><span>Expresso<span class="brand-sub">Bradesco · Gestão</span></span></a>
     <div class="workspace"><span class="workspace-dot"></span> Ambiente interno</div>
     <span class="nav-label">EXPLORAR</span>
     <nav aria-label="Navegação principal">
+      <button class="nav-button" id="nav-prospeccao"><svg><use href="#i-layers"/></svg>Prospecção</button>
       <button class="nav-button active" id="nav-consulta" aria-current="page"><svg><use href="#i-search"/></svg>Consultar acessos</button>
       <button class="nav-button" id="nav-fontes"><svg><use href="#i-file"/></svg>Fontes de dados<span class="nav-count" id="nav-count">0</span></button>
     </nav>
@@ -45,6 +51,85 @@
     <main id="principal" tabindex="-1">
       <div class="page-heading"><div><div class="eyebrow">BASE CONSOLIDADA</div><h1 id="page-title">Consulta de acessos</h1><p id="page-description">Pesquise clientes, sistemas e permissões em um só lugar.</p></div><div class="publication"><svg><use href="#i-clock"/></svg><div><span>Dados publicados em</span><strong id="updated">—</strong></div></div></div>
       <div id="error-banner" class="error-banner" role="alert" hidden><span id="error-text"></span><button id="retry" class="button secondary compact">Tentar novamente</button></div>
+
+      <section id="prospeccao-view" aria-label="Prospecção de credenciados" hidden>
+        <div id="pro-error" class="error-banner pro-error" role="alert" hidden></div>
+        <div id="pro-empty" class="panel pro-empty" hidden><h2>A base de prospecção ainda não foi publicada</h2><p>Preencha os arquivos conforme os modelos, ajuste a configuração e execute<br><code>python prospeccao.py</code><br>Depois, clique em Atualizar painel. O guia completo está em GUIA_PROSPECCAO.md.</p></div>
+        <div id="pro-content" aria-busy="true">
+          <form id="pro-filters" class="panel pro-toolbar">
+            <div class="pro-filter-grid">
+              <label>De<select id="pro-start" required aria-label="Mês inicial do período"></select></label>
+              <label>Até<select id="pro-month" required aria-label="Mês final do período"></select></label>
+              <label>Gerência<select id="pro-region"><option value="">Todas as gerências</option></select></label>
+              <label>Consultor responsável<select id="pro-person"><option value="">Todos os responsáveis</option></select></label>
+              <button class="button primary" type="submit" id="pro-apply" disabled><svg><use href="#i-filter"/></svg>Aplicar filtros</button>
+            </div>
+            <div class="period-shortcuts" aria-label="Atalhos de período"><span>Períodos rápidos</span><button type="button" data-pro-range="1">Último fechado</button><button type="button" data-pro-range="3">3 meses</button><button type="button" data-pro-range="6">6 meses</button><button type="button" data-pro-range="12">12 meses</button><button type="button" data-pro-range="ano">Ano até o último fechado</button></div>
+            <p id="pro-dirty" class="filter-dirty" role="status" hidden>Filtros alterados. Clique em Aplicar filtros para atualizar os resultados.</p>
+            <details class="pro-details"><summary>Município, ramo e safra de inauguração</summary><div class="pro-filter-extra"><label>Município<select id="pro-city"><option value="">Todos os municípios</option></select></label><label>Ramo de atividade<select id="pro-branch"><option value="">Todos os ramos</option></select></label><label>Safra de inauguração<select id="pro-cohort"><option value="">Todas as safras</option></select></label><button type="button" class="text-button" id="pro-clear">Limpar filtros</button></div></details>
+            <div class="pro-context"><span id="pro-close-state" class="pro-state">Carregando</span><span>Período: <strong id="pro-reference">—</strong></span><span>Corte dos dados: <strong id="pro-cutoff">—</strong></span><span id="pro-rule">M0 = mês da inauguração</span><button type="button" class="text-button" id="pro-export" disabled><svg><use href="#i-download"/></svg>Exportar fechamento</button></div>
+          </form>
+          <div id="pro-active-filters" class="active-filter-chips" aria-label="Filtros aplicados"></div>
+          <p id="pro-period-note" class="pro-note"></p>
+          <div id="pro-partial" class="pro-note warning" hidden>O intervalo inclui uma competência parcial. As comparações estão suspensas. O volume acumulado usa somente produção confirmada; a situação do mês parcial pode ficar indeterminada.</div>
+          <div class="metrics pro-metrics" id="pro-kpis" aria-label="Indicadores principais"></div>
+          <div class="pro-tabs" role="tablist" aria-label="Análises de prospecção">
+            <button id="pro-tab-geral" type="button" role="tab" aria-selected="true" aria-controls="pro-panel-geral" data-pro-tab="geral">Visão geral</button>
+            <button id="pro-tab-consultores" type="button" role="tab" aria-selected="false" aria-controls="pro-panel-consultores" data-pro-tab="consultores" tabindex="-1">Produção de consultores</button>
+            <button id="pro-tab-funil" type="button" role="tab" aria-selected="false" aria-controls="pro-panel-funil" data-pro-tab="funil" tabindex="-1">Funil</button>
+            <button id="pro-tab-continuidade" type="button" role="tab" aria-selected="false" aria-controls="pro-panel-continuidade" data-pro-tab="continuidade" tabindex="-1">Continuidade</button>
+            <button id="pro-tab-risco" type="button" role="tab" aria-selected="false" aria-controls="pro-panel-risco" data-pro-tab="risco" tabindex="-1">Risco operacional</button>
+            <button id="pro-tab-servicos" type="button" role="tab" aria-selected="false" aria-controls="pro-panel-servicos" data-pro-tab="servicos" tabindex="-1">Serviços</button>
+            <button id="pro-tab-acompanhamento" type="button" role="tab" aria-selected="false" aria-controls="pro-panel-acompanhamento" data-pro-tab="acompanhamento" tabindex="-1">Acompanhamento</button>
+            <button id="pro-tab-dados" type="button" role="tab" aria-selected="false" aria-controls="pro-panel-dados" data-pro-tab="dados" tabindex="-1">Qualidade dos dados</button>
+          </div>
+          <section id="pro-panel-geral" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-geral">
+            <div class="pro-grid">
+              <article class="panel"><div class="result-header"><div><h2>Evolução dos contratos</h2><p class="muted small">Movimentações ocorridas em cada mês</p></div></div><div class="pro-body"><div class="chart-legend"><span><i class="legend-dot"></i>Emissões</span><span><i class="legend-dot alt"></i>Aprovações</span></div><div id="pro-trend-chart"></div><details class="pro-details"><summary>Ver os valores da evolução</summary><div id="pro-trend-table"></div></details></div></article>
+              <article class="panel"><div class="result-header"><div><h2>Saúde da carteira</h2><p class="muted small">Situação no fechamento do último mês do período</p></div></div><div class="pro-body"><div id="pro-risk-bars" class="pro-risk"></div><p class="pro-kpi-note" id="pro-coverage-note"></p><button class="text-button" id="pro-open-risk">Abrir lista de acompanhamento →</button></div></article>
+            </div>
+            <article class="panel"><div class="result-header"><div><h2>Resultados por gerência</h2><p class="muted small">Funil pela origem do contrato. Carteira pela vinculação no mês.</p></div></div><div id="pro-regions-table"></div></article>
+            <p class="pro-footnote">As taxas totais usam a soma dos numeradores e denominadores. Aprovações do mês e emissões do mês são movimentações diferentes; o aproveitamento usa a mesma safra de emissão.</p>
+          </section>
+          <section id="pro-panel-consultores" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-consultores" hidden>
+            <p class="pro-note">Escolha uma gerência para consultar seus consultores, ou selecione um consultor no filtro do topo. Contratos usam a origem, produção usa a carteira de cada mês e atendimentos usam o executor informado. Pendências são encaminhamentos, separados das realizações.</p>
+            <div id="pro-consult-error" class="error-banner" role="alert" hidden></div>
+            <div class="metrics" id="pro-consult-kpis"></div>
+            <article class="panel"><div class="result-header"><div><h2>Produção dos consultores</h2><p class="muted small">Volumes no período. Clique no nome para abrir os registros do consultor.</p></div><button type="button" id="pro-consult-export" disabled class="button primary compact"><svg><use href="#i-download"/></svg>Exportar atividades</button></div><div id="pro-consult-summary"></div><div class="pro-body"><p id="pro-consult-note" class="pro-footnote"></p></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Atividades registradas <span id="pro-activity-count" class="small-badge">0</span></h2><p class="muted small">Emissões, decisões, inaugurações, produção, treinamentos, suportes e habilitações</p></div></div><div class="pro-body"><div class="activity-filter-grid"><label>Pesquisar nas atividades<input type="search" id="pro-activity-search" maxlength="300" placeholder="Contrato, loja, serviço ou informação…"></label><label>Tipo de atividade<select id="pro-activity-type"><option value="">Todos os tipos</option></select></label><button type="button" class="text-button" id="pro-activity-clear">Limpar busca e tipo</button></div><p class="muted small">A busca e o tipo também refinam o resumo e a exportação desta aba.</p></div><div id="pro-activities-table" aria-live="polite" aria-busy="false"></div><div class="table-footer"><span id="pro-activities-range" role="status"></span><div class="pagination"><label>Por página<select id="pro-activity-size" data-native="true"><option>25</option><option>50</option><option>100</option></select></label><button type="button" id="pro-activity-prev" class="page-button" aria-label="Atividades na página anterior">‹</button><span id="pro-activity-page"></span><button type="button" id="pro-activity-next" class="page-button" aria-label="Atividades na próxima página">›</button></div></div></article>
+          </section>
+          <section id="pro-panel-funil" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-funil" hidden>
+            <article class="panel pro-card-pad"><h2>Da emissão à inauguração</h2><p class="muted small">Contratos emitidos no período selecionado, observados até o corte.</p><div id="pro-funnel" class="pro-funnel"></div><p id="pro-contract-state-note" class="pro-footnote"></p></article>
+            <article class="panel"><div class="result-header"><div><h2>Conversão, decisões e prazos</h2><p class="muted small">Variações de taxas em pontos percentuais. Demais variações em %.</p></div></div><div id="pro-funnel-indicators"></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Produção por consultor responsável</h2><p class="muted small">Volumes do recorte e quantidade de lojas observadas.</p></div></div><div id="pro-people-table"></div></article>
+          </section>
+          <section id="pro-panel-continuidade" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-continuidade" hidden>
+            <article class="panel"><div class="result-header"><div><h2>Atividade por safra de inauguração</h2><p class="muted small">Percentual com negócios na mesma idade operacional. Abaixo da taxa: produtoras / observadas.</p></div></div><div id="pro-cohort-table"></div><div class="pro-body"><p class="pro-footnote">M0 é o mês da inauguração. Células sem observação ficam em branco. Encerramentos permanecem na safra e aparecem em coluna própria.</p></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Produção e recorrência</h2><p class="muted small">Médias, medianas, continuidade e reativação</p></div></div><div id="pro-quality-indicators"></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Condições de continuidade após M4</h2><p class="muted small">Associações observadas, com tamanho da amostra</p></div><label>Agrupar por<select id="pro-condition"><option value="gerencia">Gerência</option><option value="municipio">Município</option><option value="bairro">Bairro</option><option value="ramo">Ramo de atividade</option><option value="safra">Safra de inauguração</option><option value="tempo_implantacao">Tempo de implantação</option><option value="treinamento">Treinamento</option></select></label></div><div id="pro-conditions-table"></div></article>
+          </section>
+          <section id="pro-panel-risco" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-risco" hidden>
+            <p class="pro-note">Atenção: um mês sem negócios. Risco crítico: dois meses. Inativo: três ou mais meses confirmados. Uma lacuna pode tornar a situação indeterminada; transações bancárias são avaliadas separadamente.</p>
+            <article class="panel"><div class="result-header"><div><h2>Lista de acompanhamento <span id="pro-list-count" class="small-badge">0</span></h2><p class="muted small">Abra uma loja para consultar histórico, serviços e atendimentos.</p></div></div><div class="pro-body"><div class="pro-list-filters"><label>Buscar loja, CNPJ, município ou consultor<input type="search" id="pro-search" maxlength="300" placeholder="Digite um nome ou uma chave…"></label><label>Situação em negócios<select id="pro-risk"><option value="">Todas as situações</option><option>Ativo</option><option>Atenção</option><option>Risco crítico</option><option>Inativo</option><option>Indeterminado</option><option>Em implantação</option><option>Encerrado</option></select></label><label>Treinamento<select id="pro-training"><option value="">Todas as condições</option><option>Realizado</option><option>Não realizado</option><option>Não informado</option></select></label></div><p class="muted small">Estes três filtros refinam a lista e a exportação. Os indicadores seguem o recorte do topo.</p></div><div id="pro-stores-table"></div><div class="table-footer"><span id="pro-page-info" aria-live="polite"></span><div class="pagination"><label>Por página<select id="pro-page-size" data-native="true"><option>25</option><option>50</option><option>100</option></select></label><button id="pro-prev" class="page-button" aria-label="Lojas na página anterior">‹</button><span id="pro-page-label"></span><button id="pro-next" class="page-button" aria-label="Lojas na próxima página">›</button></div></div></article>
+          </section>
+          <section id="pro-panel-servicos" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-servicos" hidden>
+            <article class="panel"><div class="result-header"><div><h2>Habilitação e utilização de serviços</h2><p class="muted small">S01: lojas produtoras / lojas habilitadas durante o mês inteiro e com dados completos</p></div></div><div id="pro-services-table"></div><div class="pro-body"><p class="pro-footnote">As categorias são definidas no cadastro de serviços da sua operação. Habilitações parciais aparecem separadamente.</p></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Perfil operacional da carteira</h2><p class="muted small">S03: transações e negócios em dimensões diferentes</p></div></div><div id="pro-profiles-table"></div><div class="pro-body"><p id="pro-diversification" class="pro-footnote"></p></div></article>
+          </section>
+          <section id="pro-panel-acompanhamento" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-acompanhamento" hidden>
+            <article class="panel"><div class="result-header"><div><h2>Treinamento e suportes M2/M4</h2><p class="muted small">Só contam atendimentos realizados até o mês da análise.</p></div></div><div id="pro-training-indicators"></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Atividade por condição de treinamento</h2><p class="muted small">T06: condição registrada antes do início de M5, M6 ou M12</p></div></div><div id="pro-training-cohorts"></div><div class="pro-body"><p class="pro-footnote">Diferenças entre os grupos indicam associação. Elas não demonstram, isoladamente, que o treinamento causou o resultado.</p></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Suportes vencidos sem realização</h2><p class="muted small">Inclui lojas sem ação prevista cadastrada.</p></div></div><div id="pro-support-table"></div></article>
+          </section>
+          <section id="pro-panel-dados" class="pro-section" role="tabpanel" aria-labelledby="pro-tab-dados" hidden>
+            <div id="pro-validation-alert" class="pro-note warning" hidden></div>
+            <div class="metrics" id="pro-data-kpis"></div>
+            <article class="panel"><div class="result-header"><div><h2>Validações da carga publicada</h2><p class="muted small">A publicação é bloqueada por erros. Avisos e cobertura insuficiente mantêm o fechamento provisório.</p></div></div><div id="pro-issues-table"></div></article>
+            <article class="panel"><div class="result-header"><div><h2>Arquivos e granularidades</h2><p class="muted small">Cada arquivo corresponde a uma tabela do catálogo de prospecção.</p></div></div><div id="pro-sources-table"></div></article>
+            <article class="panel pro-card-pad"><h2>Regras desta análise</h2><dl class="pro-dictionary"><div><dt>Competência e corte</dt><dd>A competência identifica o mês da produção. O corte limita os fatos disponíveis na carga.</dd></div><div><dt>Zero confirmado</dt><dd>Uma produção ausente só vale zero em domínio e mês com cobertura COMPLETO validada.</dd></div><div><dt>Safra e movimentação</dt><dd>O funil acompanha os contratos emitidos na mesma safra. A evolução mensal mostra eventos ocorridos.</dd></div><div><dt>Responsável e gerência</dt><dd>O funil usa a origem do contrato. A carteira usa o vínculo vigente no fechamento do mês.</dd></div><div><dt>Negócios e transações</dt><dd>A classificação dos serviços vem do cadastro. Uma loja pode estar inativa em negócios e ativa em transações.</dd></div><div><dt>Regras de suporte</dt><dd>M0 é a inauguração; o pós-suporte começa em M5. O prazo padrão de M2/M4 termina no último dia do marco.</dd></div></dl><p class="pro-footnote">Fórmulas, campos, integração e roteiro mensal: GUIA_PROSPECCAO.md e DICIONARIO_INDICADORES.md, incluídos no projeto.</p></article>
+          </section>
+        </div>
+      </section>
 
       <section id="consulta-view" aria-label="Consulta de registros">
         <div class="metrics" aria-label="Totais da consulta">
@@ -63,6 +148,7 @@
             <label id="status-control">Status<select id="status"><option value="">Todos os status</option></select></label>
             <label>Arquivo de origem<select id="source"><option value="">Todos os arquivos</option></select></label>
           </div>
+          <div id="consulta-date-range" class="consulta-date-range" hidden><label>Campo de data<select id="date-column" aria-label="Campo para o período da consulta"></select></label><label>De<input type="date" id="date-from" aria-label="Data inicial da consulta"></label><label>Até<input type="date" id="date-to" aria-label="Data final da consulta"></label><span>As duas datas são incluídas.</span></div>
           <details id="advanced" class="advanced"><summary><svg><use href="#i-filter"/></svg>Filtros por coluna<span id="advanced-count" class="small-badge" hidden>0</span></summary><p class="muted small">Combine condições. O resultado deve atender a todos os filtros aplicados.</p><div id="filter-rows"></div><div class="filter-actions"><button id="add-filter" class="button secondary compact">+ Adicionar condição</button><button id="apply-filters" class="button primary compact">Aplicar condições</button></div></details>
           <p id="options-note" class="muted small" hidden>Os atalhos mostram até 100 valores. Para outros valores, use a busca ou um filtro por coluna.</p>
         </section>
@@ -71,17 +157,18 @@
           <div class="result-header"><div><h2 id="result-title">Registros de acesso <span id="result-count" class="small-badge">0</span></h2><p class="muted small">Clique em um registro para ver todos os campos e a origem.</p></div><div class="result-actions"><details class="columns-menu" id="columns-menu"><summary class="button secondary compact"><svg><use href="#i-columns"/></svg>Colunas</summary><fieldset id="column-options"><legend>Colunas visíveis</legend></fieldset></details><button class="button primary compact" id="export"><svg><use href="#i-download"/></svg>Exportar CSV</button></div></div>
           <div class="status-strip" id="status-strip" aria-label="Distribuição por status"></div>
           <div class="table-scroll" id="table-scroll" aria-busy="true"><table id="results"><caption class="sr-only">Registros que atendem aos filtros selecionados</caption><thead id="table-head"></thead><tbody id="table-body"><tr><td class="table-message">Carregando registros…</td></tr></tbody></table></div>
-          <div class="table-footer"><span id="result-range" aria-live="polite">Carregando…</span><div class="pagination"><label>Por página<select id="page-size"><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></label><button id="previous" class="page-button" aria-label="Página anterior" disabled>‹</button><span id="page-label">1 / 1</span><button id="next" class="page-button" aria-label="Próxima página" disabled>›</button></div></div>
+          <div class="table-footer"><span id="result-range" aria-live="polite">Carregando…</span><div class="pagination"><label>Por página<select id="page-size" data-native="true"><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></label><button id="previous" class="page-button" aria-label="Página anterior" disabled>‹</button><span id="page-label">1 / 1</span><button id="next" class="page-button" aria-label="Próxima página" disabled>›</button></div></div>
         </section>
       </section>
 
       <section id="fontes-view" aria-label="Fontes de dados" hidden><div class="source-intro"><svg><use href="#i-file"/></svg><div><h2>Arquivos publicados na base</h2><p>Esta lista mostra as planilhas da última importação concluída.</p></div></div><div id="source-cards" class="source-cards"></div>
         <section id="schema-audit" class="panel schema-audit" hidden><div class="panel-heading"><h2>Padronização das colunas <span id="schema-state" class="small-badge"></span></h2></div><p id="schema-summary"></p><ul id="schema-warnings" class="schema-warnings"></ul><h3 id="schema-key-title">CHAVE_LOJA por tabela</h3><div class="audit-scroll"><table><thead><tr><th>Tabela</th><th>Linhas</th><th>Chaves distintas</th><th>Repetições</th><th>Unicidade</th></tr></thead><tbody id="schema-keys"></tbody></table></div><details class="advanced"><summary>Ver nomes de origem e nomes no painel</summary><div class="audit-scroll"><table><thead><tr><th>Fonte</th><th>Coluna original</th><th>Coluna no painel</th><th>Regra aplicada</th></tr></thead><tbody id="schema-mappings"></tbody></table></div></details></section>
       </section>
-      <footer class="page-footer"><span>Central de consulta de acessos</span><span id="base-total">—</span></footer>
+      <footer class="page-footer"><span>Bradesco Expresso · Gestão e consultas</span><span id="base-total">—</span></footer>
     </main>
   </div>
 
+  <dialog id="pro-loja-dialog" class="pro-loja-dialog"><div class="dialog-heading"><div><div class="eyebrow">HISTÓRICO DO CREDENCIADO</div><h2 id="pro-loja-title">Credenciado</h2></div><button class="close-button" data-close="pro-loja-dialog" aria-label="Fechar histórico">×</button></div><div id="pro-loja-content" class="pro-loja-content"></div><div class="dialog-footer"><button class="button primary" data-close="pro-loja-dialog">Fechar histórico</button></div></dialog>
   <dialog id="record-dialog" class="record-dialog"><div class="dialog-heading"><div><div class="eyebrow">DETALHES DO REGISTRO</div><h2 id="record-title">Registro</h2></div><button class="close-button" data-close="record-dialog" aria-label="Fechar detalhes">×</button></div><dl id="record-fields"></dl><div class="record-source" id="record-source"></div><div class="dialog-footer"><button class="button primary" data-close="record-dialog">Fechar detalhes</button></div></dialog>
   <dialog id="help-dialog" class="help-dialog"><div class="dialog-heading"><h2>Como consultar os acessos</h2><button class="close-button" data-close="help-dialog" aria-label="Fechar ajuda">×</button></div><ol class="help-list"><li><strong>Pesquise uma informação.</strong> Use a busca geral ou escolha uma coluna. A busca ignora acentos e maiúsculas.</li><li><strong>Refine os resultados.</strong> Combine cliente, sistema, status, arquivo e condições por coluna.</li><li><strong>Confira os detalhes.</strong> Abra um registro para ver todos os campos, a planilha, a aba e a linha de origem.</li><li><strong>Leve o resultado com você.</strong> “Exportar CSV” baixa todos os registros da consulta, incluindo os campos que não estão visíveis.</li></ol><div class="help-note">“Atualizar consulta” carrega a última base publicada pela rotina. A data de publicação aparece no topo do painel.</div><div class="dialog-footer"><button class="button primary" data-close="help-dialog">Entendi</button></div></dialog>
   <div class="toast" id="toast" role="status" hidden></div>
