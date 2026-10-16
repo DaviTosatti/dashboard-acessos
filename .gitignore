@@ -21,10 +21,15 @@ relatorios/
 *.db
 
 # Apenas os exemplos fictícios acompanham o código
-planilhas/aprovadas/*
-!planilhas/aprovadas/exemplo_matriz.xlsx
-!planilhas/aprovadas/exemplo_filiais.xlsx
+planilhas_aprovadas/*
+!planilhas_aprovadas/exemplo_matriz.xlsx
+!planilhas_aprovadas/exemplo_filiais.xlsx
 
 # Arquivos do sistema operacional
 .DS_Store
 Thumbs.db
+
+# Entradas de prospeccao reais e catalogos internos
+catalogo_prospeccao.local.json
+planilhas_prospeccao_reais/
+exemplos_prospeccao/

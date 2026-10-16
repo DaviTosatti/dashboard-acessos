@@ -17,12 +17,21 @@ class ErroConsulta(ValueError):
     pass
 
 
+def uri_somente_leitura(caminho):
+    """Preserva caminhos UNC no pathname, sem depender de URI authority no SQLite."""
+    uri = caminho.as_uri()
+    if uri.startswith('file://') and not uri.startswith('file:///'):
+        # file://servidor/pasta -> file:////servidor/pasta (authority vazia).
+        uri = 'file:////' + uri[len('file://'):]
+    return uri + '?mode=ro'
+
+
 @contextmanager
 def abrir_base(config: Configuracao):
     if not config.banco.exists():
         yield None
         return
-    conn = sqlite3.connect(config.banco.as_uri() + '?mode=ro', uri=True, timeout=15)
+    conn = sqlite3.connect(uri_somente_leitura(config.banco), uri=True, timeout=15)
     conn.row_factory = sqlite3.Row
     conn.create_function('fold', 1, normalizar, deterministic=True)
     conn.create_collation('FOLD', lambda a, b: (normalizar(a) > normalizar(b)) - (normalizar(a) < normalizar(b)))
