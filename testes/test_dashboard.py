@@ -23,9 +23,10 @@ class DashboardTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         self.sources = self.root / 'entradas'
-        shutil.copytree(PROJETO / 'planilhas/aprovadas', self.sources)
+        shutil.copytree(PROJETO / 'planilhas_aprovadas', self.sources)
         shutil.copy(PROJETO / 'catalogo_colunas.json', self.root / 'catalogo_colunas.json')
         config = json.loads((PROJETO / 'configuracao.json').read_text(encoding='utf-8'))
+        config.pop('prospeccao', None)  # Estes testes exercitam o módulo de consultas isoladamente.
         config.update({'pasta_planilhas': 'entradas', 'banco': 'base.sqlite3'})
         self.config_path = self.root / 'config.json'
         self.config_path.write_text(json.dumps(config, ensure_ascii=False), encoding='utf-8')
